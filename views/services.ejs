@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>Find Help</h1>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+
+      <form action="/services" method="GET" class="filter-form">
+        <label for="search">Search</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          value="<%= query.search || '' %>"
+          placeholder="Search by service, category or keyword"
+        >
+
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option value="">All categories</option>
+
+          <option value="Digital Help" <%= query.category === 'Digital Help' ? 'selected' : '' %>>
+            Digital Help
+          </option>
+
+          <option value="Food Support" <%= query.category === 'Food Support' ? 'selected' : '' %>>
+            Food Support
+          </option>
+
+          <option value="Warm / Cool Spaces" <%= query.category === 'Warm / Cool Spaces' ? 'selected' : '' %>>
+            Warm / Cool Spaces
+          </option>
+
+          <option value="Advice" <%= query.category === 'Advice' ? 'selected' : '' %>>
+            Advice
+          </option>
+
+          <option value="Community Events" <%= query.category === 'Community Events' ? 'selected' : '' %>>
+            Community Events
+          </option>
+
+          <option value="Accessibility" <%= query.category === 'Accessibility' ? 'selected' : '' %>>
+            Accessibility
+          </option>
+        </select>
+
+        <label>
+          <input type="checkbox" name="free" value="true" <%= query.free === 'true' ? 'checked' : '' %>>
+          Free services only
+        </label>
+
+        <label>
+          <input type="checkbox" name="wifi" value="true" <%= query.wifi === 'true' ? 'checked' : '' %>>
+          Has Wi-Fi
+        </label>
+
+        <label>
+          <input type="checkbox" name="printer" value="true" <%= query.printer === 'true' ? 'checked' : '' %>>
+          Has printer
+        </label>
+
+        <label>
+          <input type="checkbox" name="toilets" value="true" <%= query.toilets === 'true' ? 'checked' : '' %>>
+          Has toilets
+        </label>
+
+        <label>
+          <input type="checkbox" name="stepFree" value="true" <%= query.stepFree === 'true' ? 'checked' : '' %>>
+          Step-free access
+        </label>
+
+        <button type="submit">Apply filters</button>
+      </form>
+
+      <section class="results">
+        <h2><%= services.length %> result(s)</h2>
+
+        <% if (services.length === 0) { %>
+          <p>No services matched your search. Try removing a filter.</p>
+        <% } %>
+
+        <% services.forEach((service) => { %>
+          <article class="service-card">
+            <h3><%= service.name %></h3>
+
+            <p><strong>Category:</strong> <%= service.category %></p>
+            <p><%= service.description %></p>
+            <p><strong>Opening times:</strong> <%= service.openingTimes %></p>
+
+            <ul>
+              <% if (service.isFree) { %>
+                <li>Free</li>
+              <% } %>
+
+              <% if (service.hasWifi) { %>
+                <li>Wi-Fi available</li>
+              <% } %>
+
+              <% if (service.hasPrinter) { %>
+                <li>Printer available</li>
+              <% } %>
+
+              <% if (service.hasToilets) { %>
+                <li>Toilets available</li>
+              <% } %>
+
+              <% if (service.hasStepFreeAccess) { %>
+                <li>Step-free access</li>
+              <% } %>
+            </ul>
+
+            <a href="/services/<%= service._id %>">View details</a>
+          </article>
+        <% }) %>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
