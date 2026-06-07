@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/head') %>
+
+  <body>
+    <%- include('../partials/nav') %>
+
+    <main>
+      <h1>Admin Login</h1>
+
+      <p>
+        This area is for trusted service providers or project admins to update service information.
+      </p>
+
+      <% if (error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+
+      <form action="/admin/login" method="POST" class="form-card">
+        <label for="password">Admin password</label>
+
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+        >
+
+        <button type="submit">Log in</button>
+      </form>
+    </main>
+
+    <%- include('../partials/footer') %>
+  </body>
+</html>

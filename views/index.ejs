@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/nav') %>
+
+    <main>
+      <section class="hero">
+        <h1>Find local help in Ladywood</h1>
+
+        <p>
+          CommunityLink Ladywood helps residents and community workers find
+          local services, digital help, food support, advice, events and
+          accessibility information in one simple place.
+        </p>
+
+        <form action="/services" method="GET" class="search-form">
+          <label for="search">What do you need help with?</label>
+
+          <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Search Wi-Fi, food, advice, printing..."
+          />
+
+          <button type="submit">Search</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Choose a category</h2>
+
+        <div class="category-grid">
+          <a href="/services?category=Digital Help">Wi-Fi / Digital Help</a>
+          <a href="/services?category=Food Support">Food Support</a>
+          <a href="/services?category=Warm / Cool Spaces">Warm / Cool Spaces</a>
+          <a href="/services?category=Advice">Advice</a>
+          <a href="/services?category=Community Events">Community Events</a>
+          <a href="/services?category=Accessibility">Accessibility</a>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
