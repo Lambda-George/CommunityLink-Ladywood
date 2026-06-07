@@ -51,7 +51,9 @@ app.use('/admin', adminRoutes)
 
 // 404
 app.use((req, res) => {
-  res.status(404).render('404.ejs')
+  res.status(404).render('404', {
+    title: 'Page Not Found',
+  })
 })
 
 // start server

@@ -8,7 +8,7 @@
     <main>
       <h1>Find Help</h1>
 
-      <% if (typeof error !== 'undefined' && error) { %>
+      <% if (error) { %>
         <p class="error"><%= error %></p>
       <% } %>
 
@@ -87,7 +87,7 @@
         <% } %>
 
         <% services.forEach((service) => { %>
-          <article class="service-card">
+          <article class="service-card" id="service-<%= service._id %>">
             <h3><%= service.name %></h3>
 
             <p><strong>Category:</strong> <%= service.category %></p>
@@ -116,7 +116,35 @@
               <% } %>
             </ul>
 
-            <a href="/services/<%= service._id %>">View details</a>
+            <details>
+              <summary>View more details</summary>
+
+              <div class="service-more-info">
+                <p><strong>Address:</strong> <%= service.address %></p>
+
+                <% if (service.phone) { %>
+                  <p><strong>Phone:</strong> <%= service.phone %></p>
+                <% } %>
+
+                <p><strong>Cost:</strong> <%= service.isFree ? 'Free' : 'Paid or donation' %></p>
+
+                <p><strong>Wi-Fi:</strong> <%= service.hasWifi ? 'Yes' : 'No' %></p>
+                <p><strong>Printer:</strong> <%= service.hasPrinter ? 'Yes' : 'No' %></p>
+                <p><strong>Toilets:</strong> <%= service.hasToilets ? 'Yes' : 'No' %></p>
+                <p><strong>Step-free access:</strong> <%= service.hasStepFreeAccess ? 'Yes' : 'No' %></p>
+
+                <% if (service.accessibilityNotes) { %>
+                  <p><strong>Accessibility notes:</strong> <%= service.accessibilityNotes %></p>
+                <% } %>
+
+                <p>
+                  <strong>Last updated:</strong>
+                  <%= service.updatedAt ? new Date(service.updatedAt).toLocaleDateString('en-GB') : 'Not recorded' %>
+                </p>
+
+                <button type="button" onclick="window.print()">Print this page</button>
+              </div>
+            </details>
           </article>
         <% }) %>
       </section>
