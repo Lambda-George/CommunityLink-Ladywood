@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>Map of Ladywood</h1>
+
+      <p>Use the map to explore the Ladywood area of Birmingham.</p>
+
+      <div id="ladywood-map"></div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const ladywoodCoordinates = [52.4777, -1.9251]
+
+        const map = L.map('ladywood-map').setView(ladywoodCoordinates, 14)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(map)
+
+        L.marker(ladywoodCoordinates)
+          .addTo(map)
+          .bindPopup('Ladywood, Birmingham')
+      })
+    </script>
+  </body>
+</html>
