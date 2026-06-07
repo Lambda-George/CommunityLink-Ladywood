@@ -1,9 +1,13 @@
 const { Service } = require('../models/service.model.js')
 
-const getHomePage = (req, res) => {
-  res.render('index.ejs', {
-    title: 'CommunityLink Ladywood',
-  })
+const getHomePage = async (req, res) => {
+  try {
+    res.render('index', {
+      title: 'CommunityLink Ladywood',
+    })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
 }
 
 const getServices = async (req, res) => {
@@ -51,8 +55,11 @@ const getServices = async (req, res) => {
       title: 'Find Help',
       services,
       query: req.query,
+      error: null,
     })
   } catch (error) {
+    console.error(error)
+
     res.status(500).render('services', {
       title: 'Find Help',
       services: [],
@@ -62,27 +69,7 @@ const getServices = async (req, res) => {
   }
 }
 
-const getServiceById = async (req, res) => {
-  try {
-    const { id } = req.params
-
-    const service = await Service.findById(id).lean()
-
-    if (!service) {
-      return res.status(404).send('Service not found')
-    }
-
-    res.render('service-details', {
-      title: service.name,
-      service,
-    })
-  } catch (error) {
-    res.status(500).send('Could not load service')
-  }
-}
-
 module.exports = {
   getHomePage,
   getServices,
-  getServiceById,
 }

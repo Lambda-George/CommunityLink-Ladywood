@@ -8,7 +8,9 @@
     <main>
       <h1>Admin Dashboard</h1>
 
-      <p>Use this page to add or remove services from CommunityLink Ladywood.</p>
+      <p>
+        Use this page to add or remove services from CommunityLink Ladywood.
+      </p>
 
       <% if (error) { %>
         <p class="error"><%= error %></p>
@@ -113,12 +115,15 @@
               <% services.forEach((service) => { %>
                 <tr>
                   <td><%= service.name %></td>
+
                   <td><%= service.category %></td>
+
                   <td>
                     <%= service.updatedAt ? new Date(service.updatedAt).toLocaleDateString('en-GB') : 'N/A' %>
                   </td>
+
                   <td>
-                    <a href="/services/<%= service._id %>">View</a>
+                    <a href="/services#service-<%= service._id %>">View</a>
 
                     <form
                       action="/admin/services/<%= service._id %>/delete"
