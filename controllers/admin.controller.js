@@ -30,6 +30,7 @@ const loginAdmin = async (req, res) => {
     }
 
     req.session.isAdmin = true
+
     res.redirect('/admin')
   } catch (error) {
     res.status(500).render('admin/login', {
@@ -59,10 +60,12 @@ const getAdminDashboard = async (req, res) => {
       error: null,
     })
   } catch (error) {
+    console.error(error)
+
     res.status(500).render('admin/dashboard', {
       title: 'Admin Dashboard',
       services: [],
-      error: 'Could not load dashboard',
+      error: 'Could not load dashboard.',
     })
   }
 }
@@ -77,7 +80,7 @@ const createService = async (req, res) => {
       return res.status(400).render('admin/dashboard', {
         title: 'Admin Dashboard',
         services,
-        error: 'Please fill in all required fields',
+        error: 'Please fill in all required fields.',
       })
     }
 
@@ -88,16 +91,20 @@ const createService = async (req, res) => {
       address,
       phone: req.body.phone,
       openingTimes,
+
       isFree: req.body.isFree === 'on',
       hasWifi: req.body.hasWifi === 'on',
       hasPrinter: req.body.hasPrinter === 'on',
       hasToilets: req.body.hasToilets === 'on',
       hasStepFreeAccess: req.body.hasStepFreeAccess === 'on',
+
       accessibilityNotes: req.body.accessibilityNotes,
     })
 
     res.redirect('/admin')
   } catch (error) {
+    console.error(error)
+
     const services = await Service.find().sort({ name: 1 }).lean()
 
     res.status(500).render('admin/dashboard', {
@@ -116,6 +123,8 @@ const deleteService = async (req, res) => {
 
     res.redirect('/admin')
   } catch (error) {
+    console.error(error)
+
     res.status(500).send('Could not delete service')
   }
 }

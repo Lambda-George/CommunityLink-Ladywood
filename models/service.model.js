@@ -8,7 +8,7 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
     },
 
-    catagory: {
+    category: {
       type: String,
       required: true,
       trim: true,

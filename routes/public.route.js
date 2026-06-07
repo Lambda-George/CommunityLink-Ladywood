@@ -3,13 +3,15 @@ const express = require('express')
 const {
   getHomePage,
   getServices,
-  getServiceById,
-} = require('../controllers/public.controllers.js')
+  getMapPage,
+} = require('../controllers/public.controller.js')
 
 const router = express.Router()
 
 router.get('/', getHomePage)
+
 router.get('/services', getServices)
-router.get('/services/:id', getServiceById)
+
+router.get('/map', getMapPage)
 
 module.exports = router
