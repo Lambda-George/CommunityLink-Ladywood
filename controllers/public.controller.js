@@ -69,7 +69,18 @@ const getServices = async (req, res) => {
   }
 }
 
+const getMapPage = async (req, res) => {
+  try {
+    res.render('map', {
+      title: 'Map',
+    })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
 module.exports = {
   getHomePage,
   getServices,
+  getMapPage,
 }

@@ -1,0 +1,16 @@
+#ladywood-map {
+  width: 100%;
+  height: 500px;
+  min-height: 500px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 1rem;
+  background: #eee;
+}
+
+@media (max-width: 600px) {
+  #ladywood-map {
+    height: 350px;
+    min-height: 350px;
+  }
+}
