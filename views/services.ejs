@@ -25,56 +25,36 @@
         <label for="category">Category</label>
         <select id="category" name="category">
           <option value="">All categories</option>
-
-          <option value="Digital Help" <%= query.category === 'Digital Help' ? 'selected' : '' %>>
-            Digital Help
-          </option>
-
-          <option value="Food Support" <%= query.category === 'Food Support' ? 'selected' : '' %>>
-            Food Support
-          </option>
-
-          <option value="Warm / Cool Spaces" <%= query.category === 'Warm / Cool Spaces' ? 'selected' : '' %>>
-            Warm / Cool Spaces
-          </option>
-
-          <option value="Advice" <%= query.category === 'Advice' ? 'selected' : '' %>>
-            Advice
-          </option>
-
-          <option value="Community Events" <%= query.category === 'Community Events' ? 'selected' : '' %>>
-            Community Events
-          </option>
-
-          <option value="Accessibility" <%= query.category === 'Accessibility' ? 'selected' : '' %>>
-            Accessibility
-          </option>
+          <option value="Digital Help" <%= query.category === 'Digital Help' ? 'selected' : '' %>>Digital Help</option>
+          <option value="Food Support" <%= query.category === 'Food Support' ? 'selected' : '' %>>Food Support</option>
+          <option value="Warm / Cool Spaces" <%= query.category === 'Warm / Cool Spaces' ? 'selected' : '' %>>Warm / Cool Spaces</option>
+          <option value="Advice" <%= query.category === 'Advice' ? 'selected' : '' %>>Advice</option>
+          <option value="Community Events" <%= query.category === 'Community Events' ? 'selected' : '' %>>Community Events</option>
+          <option value="Accessibility" <%= query.category === 'Accessibility' ? 'selected' : '' %>>Accessibility</option>
         </select>
 
-        <label>
-          <input type="checkbox" name="free" value="true" <%= query.free === 'true' ? 'checked' : '' %>>
-          Free services only
-        </label>
-
-        <label>
-          <input type="checkbox" name="wifi" value="true" <%= query.wifi === 'true' ? 'checked' : '' %>>
-          Has Wi-Fi
-        </label>
-
-        <label>
-          <input type="checkbox" name="printer" value="true" <%= query.printer === 'true' ? 'checked' : '' %>>
-          Has printer
-        </label>
-
-        <label>
-          <input type="checkbox" name="toilets" value="true" <%= query.toilets === 'true' ? 'checked' : '' %>>
-          Has toilets
-        </label>
-
-        <label>
-          <input type="checkbox" name="stepFree" value="true" <%= query.stepFree === 'true' ? 'checked' : '' %>>
-          Step-free access
-        </label>
+        <div class="filter-checkboxes">
+          <label class="checkbox-label">
+            <input type="checkbox" name="free" value="true" <%= query.free === 'true' ? 'checked' : '' %>>
+            Free services only
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="wifi" value="true" <%= query.wifi === 'true' ? 'checked' : '' %>>
+            Has Wi-Fi
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="printer" value="true" <%= query.printer === 'true' ? 'checked' : '' %>>
+            Has printer
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="toilets" value="true" <%= query.toilets === 'true' ? 'checked' : '' %>>
+            Has toilets
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="stepFree" value="true" <%= query.stepFree === 'true' ? 'checked' : '' %>>
+            Step-free access
+          </label>
+        </div>
 
         <button type="submit">Apply filters</button>
       </form>
@@ -88,33 +68,37 @@
 
         <% services.forEach((service) => { %>
           <article class="service-card" id="service-<%= service._id %>">
-            <h3><%= service.name %></h3>
 
-            <p><strong>Category:</strong> <%= service.category %></p>
-            <p><%= service.description %></p>
-            <p><strong>Opening times:</strong> <%= service.openingTimes %></p>
-
-            <ul>
+            <div class="service-card-header">
+              <div>
+                <h3 class="service-name"><%= service.name %></h3>
+                <span class="service-category"><%= service.category %></span>
+              </div>
               <% if (service.isFree) { %>
-                <li>Free</li>
+                <span class="badge badge-free">Free</span>
               <% } %>
+            </div>
 
-              <% if (service.hasWifi) { %>
-                <li>Wi-Fi available</li>
-              <% } %>
+            <p class="service-description"><%= service.description %></p>
 
+            <p class="service-hours">
+              <strong>Opening times:</strong> <%= service.openingTimes %>
+            </p>
+
+            <div class="amenity-badges">
+              <span class="amenity <%= service.hasToilets ? 'amenity-yes' : 'amenity-no' %>">
+                🚻 Toilets: <%= service.hasToilets ? 'Yes' : 'No' %>
+              </span>
+              <span class="amenity <%= service.hasStepFreeAccess ? 'amenity-yes' : 'amenity-no' %>">
+                ♿ Disabled Access: <%= service.hasStepFreeAccess ? 'Yes' : 'No' %>
+              </span>
+              <span class="amenity <%= service.hasWifi ? 'amenity-yes' : 'amenity-no' %>">
+                📶 Wi-Fi: <%= service.hasWifi ? 'Yes' : 'No' %>
+              </span>
               <% if (service.hasPrinter) { %>
-                <li>Printer available</li>
+                <span class="amenity amenity-yes">🖨️ Printer: Yes</span>
               <% } %>
-
-              <% if (service.hasToilets) { %>
-                <li>Toilets available</li>
-              <% } %>
-
-              <% if (service.hasStepFreeAccess) { %>
-                <li>Step-free access</li>
-              <% } %>
-            </ul>
+            </div>
 
             <details>
               <summary>View more details</summary>
@@ -123,15 +107,8 @@
                 <p><strong>Address:</strong> <%= service.address %></p>
 
                 <% if (service.phone) { %>
-                  <p><strong>Phone:</strong> <%= service.phone %></p>
+                  <p><strong>Phone:</strong> <a href="tel:<%= service.phone %>"><%= service.phone %></a></p>
                 <% } %>
-
-                <p><strong>Cost:</strong> <%= service.isFree ? 'Free' : 'Paid or donation' %></p>
-
-                <p><strong>Wi-Fi:</strong> <%= service.hasWifi ? 'Yes' : 'No' %></p>
-                <p><strong>Printer:</strong> <%= service.hasPrinter ? 'Yes' : 'No' %></p>
-                <p><strong>Toilets:</strong> <%= service.hasToilets ? 'Yes' : 'No' %></p>
-                <p><strong>Step-free access:</strong> <%= service.hasStepFreeAccess ? 'Yes' : 'No' %></p>
 
                 <% if (service.accessibilityNotes) { %>
                   <p><strong>Accessibility notes:</strong> <%= service.accessibilityNotes %></p>
@@ -142,9 +119,10 @@
                   <%= service.updatedAt ? new Date(service.updatedAt).toLocaleDateString('en-GB') : 'Not recorded' %>
                 </p>
 
-                <button type="button" onclick="window.print()">Print this page</button>
+                <button type="button" onclick="window.print()">🖨️ Print</button>
               </div>
             </details>
+
           </article>
         <% }) %>
       </section>
