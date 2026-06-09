@@ -97,6 +97,14 @@ html, body {
   font-weight: 600;
   font-size: 2.4rem;
 }
+
+/* ── Sites page ── */
+
+.services-heading{
+  font-size: 2.5rem;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 /* ── Map page ── */
 
 .map-main {
