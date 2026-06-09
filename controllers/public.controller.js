@@ -81,8 +81,17 @@ const getMapPage = async (req, res) => {
   }
 }
 
+const getDigitalPage = async (req, res) => {
+  try {
+    res.status(200).render('digital', { title: 'Digital' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
 module.exports = {
   getHomePage,
   getServices,
   getMapPage,
+  getDigitalPage,
 }
