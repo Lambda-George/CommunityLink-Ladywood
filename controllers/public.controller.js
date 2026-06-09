@@ -79,8 +79,14 @@ const getMapPage = async (req, res) => {
   }
 }
 
+const getFoodSupportPage = (req, res) => {
+  res.render('food-support')
+}
+
+
 module.exports = {
   getHomePage,
   getServices,
   getMapPage,
+  getFoodSupportPage
 }
