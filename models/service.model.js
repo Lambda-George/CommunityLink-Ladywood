@@ -37,6 +37,14 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
     },
 
+    lat: {
+      type: Number,
+    },
+
+    lng: {
+      type: Number,
+    },
+
     isFree: {
       type: Boolean,
       default: true,
@@ -57,7 +65,7 @@ const serviceSchema = new mongoose.Schema(
       default: false,
     },
 
-    hasSteoFreeAccess: {
+    hasStepFreeAccess: {
       type: Boolean,
       default: false,
     },

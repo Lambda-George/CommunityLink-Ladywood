@@ -25,29 +25,12 @@ const getServices = async (req, res) => {
       ]
     }
 
-    if (category) {
-      filter.category = category
-    }
-
-    if (free === 'true') {
-      filter.isFree = true
-    }
-
-    if (wifi === 'true') {
-      filter.hasWifi = true
-    }
-
-    if (printer === 'true') {
-      filter.hasPrinter = true
-    }
-
-    if (toilets === 'true') {
-      filter.hasToilets = true
-    }
-
-    if (stepFree === 'true') {
-      filter.hasStepFreeAccess = true
-    }
+    if (category) filter.category = category
+    if (free === 'true') filter.isFree = true
+    if (wifi === 'true') filter.hasWifi = true
+    if (printer === 'true') filter.hasPrinter = true
+    if (toilets === 'true') filter.hasToilets = true
+    if (stepFree === 'true') filter.hasStepFreeAccess = true
 
     const services = await Service.find(filter).sort({ name: 1 }).lean()
 
@@ -59,7 +42,6 @@ const getServices = async (req, res) => {
     })
   } catch (error) {
     console.error(error)
-
     res.status(500).render('services', {
       title: 'Find Help',
       services: [],
@@ -71,8 +53,14 @@ const getServices = async (req, res) => {
 
 const getMapPage = async (req, res) => {
   try {
+    const services = await Service.find({
+      lat: { $exists: true, $ne: null },
+      lng: { $exists: true, $ne: null },
+    }).lean()
+
     res.render('map', {
       title: 'Map',
+      services,
     })
   } catch (error) {
     res.status(500).send('Something went wrong')
