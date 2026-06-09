@@ -83,10 +83,15 @@ const getFoodSupportPage = (req, res) => {
   res.render('food-support')
 }
 
+const getCommunitiesPage = (req, res) => {
+  res.render('communities')
+}
+
 
 module.exports = {
   getHomePage,
   getServices,
   getMapPage,
-  getFoodSupportPage
+  getFoodSupportPage,
+  getCommunitiesPage,
 }
