@@ -1,14 +1,31 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --nav-height: 80px;
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 
 /* Site Logo and Nav Bar */
 
 .site-header {
   background-color: #1f2933;
   color: white;
-  padding: 1rem 2rem;
-
+  padding: 0 2rem;
+  height: var(--nav-height);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
 }
 
 .logo {
@@ -33,6 +50,7 @@
 .site-header nav a:hover {
   text-decoration: underline;
 }
+
 
 /* Home Page Boxes */
 
@@ -79,124 +97,202 @@
   font-weight: 600;
   font-size: 2.4rem;
 }
-#ladywood-map {
+/* ── Map page ── */
+
+.map-main {
+  padding: 1.5rem 2rem;
+}
+
+.map-search-bar {
+  margin-bottom: 1.25rem;
+}
+
+.map-search-bar input {
   width: 100%;
-  height: 500px;
-  min-height: 500px;
-  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  margin-top: 1rem;
-  background: #eee;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-@media (max-width: 600px) {
-  #ladywood-map {
-    height: 350px;
-    min-height: 350px;
-  }
+.map-search-bar input:focus {
+  border-color: #1f2933;
+  box-shadow: 0 0 0 3px rgba(31,41,51,0.1);
 }
 
-.service-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1.2rem;
-  margin-bottom: 1.2rem;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+.map-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
 }
 
-.service-card-header {
+/* Left list */
+.map-list {
+  width: 420px;
+  min-width: 300px;
+  flex-shrink: 0;
+  max-height: 75vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-right: 0.25rem;
+}
+
+.map-list::-webkit-scrollbar { width: 5px; }
+.map-list::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
+
+.map-empty {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Cards */
+.map-card {
+  background: white;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.map-card:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+  border-color: #b0bac6;
+}
+
+.map-card-active {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+
+.map-card-body {
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.map-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.service-name {
-  margin: 0 0 0.2rem 0;
-  font-size: 1.1rem;
-}
-
-.service-category {
-  font-size: 0.8rem;
-  background: #e8f0fe;
-  color: #1a56db;
-  padding: 2px 8px;
-  border-radius: 12px;
-  display: inline-block;
-}
-
-.badge-free {
-  background: #d1fae5;
-  color: #065f46;
-  font-size: 0.8rem;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.service-description {
-  color: #444;
-  margin: 0.5rem 0;
-}
-
-.service-hours {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 0.8rem;
-}
-
-.amenity-badges {
-  display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.2rem;
 }
 
-.amenity {
-  font-size: 0.82rem;
-  padding: 4px 10px;
+.map-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2933;
+}
+
+.map-card-tag {
+  font-size: 0.72rem;
+  background: #eef2f7;
+  color: #4a5568;
+  padding: 0.2rem 0.55rem;
   border-radius: 20px;
-  border: 1px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.amenity-yes {
+.map-card-desc {
+  font-size: 0.82rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.map-card-address {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.map-card-hours {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.map-card-badges {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  margin-top: 0.15rem;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 20px;
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.badge-green {
   background: #d1fae5;
   color: #065f46;
-  border-color: #6ee7b7;
 }
 
-.amenity-no {
-  background: #f3f4f6;
-  color: #6b7280;
-  border-color: #d1d5db;
+.map-directions-btn {
+  display: block;
+  margin-top: 0.6rem;
+  background: #1f2933;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 7px;
+  transition: background 0.15s;
 }
 
-.service-more-info {
-  margin-top: 0.8rem;
-  padding-top: 0.8rem;
-  border-top: 1px solid #eee;
-  font-size: 0.9rem;
+.map-directions-btn:hover {
+  background: #2563eb;
 }
 
-.filter-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  margin: 0.5rem 0;
+/* Right map */
+.map-right {
+  flex: 1;
+  min-width: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.9rem;
+#ladywood-map {
+  width: 100%;
+  height: 75vh;
+  min-height: 400px;
 }
 
-details summary {
-  cursor: pointer;
-  color: #1a56db;
-  font-size: 0.9rem;
+/* Mobile */
+@media (max-width: 768px) {
+  .map-main {
+    padding: 1rem;
+  }
+
+  .map-layout {
+    flex-direction: column;
+  }
+
+  .map-list {
+    width: 100%;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .map-right {
+    width: 100%;
+  }
+
+  #ladywood-map {
+    height: 55vw;
+    min-height: 260px;
+  }
 }
