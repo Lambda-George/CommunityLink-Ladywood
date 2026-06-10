@@ -6,14 +6,17 @@
     <%- include('partials/nav') %>
 
     <main>
-      <section class="hero">
-        <!-- <h1>Find local help in Ladywood</h1>
 
-        <p>
-          CommunityLink Ladywood helps residents and community workers find
-          local services, digital help, food support, advice, events and
-          accessibility information in one simple place.
-        </p> -->
+      <div class="home-search">
+        <form action="/services" method="GET" class="home-search-form">
+          <input
+            type="text"
+            name="search"
+            placeholder="Search services, food support, digital help..."
+          />
+          <button type="submit">Search</button>
+        </form>
+      </div>
 
       <div class="home-container">
 
