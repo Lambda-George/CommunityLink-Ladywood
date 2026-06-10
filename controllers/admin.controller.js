@@ -30,6 +30,7 @@ const loginAdmin = async (req, res) => {
     }
 
     req.session.isAdmin = true
+    req.session.success = 'You have signed in successfully.'
 
     res.redirect('/admin')
   } catch (error) {
@@ -54,10 +55,17 @@ const getAdminDashboard = async (req, res) => {
   try {
     const services = await Service.find().sort({ name: 1 }).lean()
 
+    const success = req.session.success || null
+    const error = req.session.error || null
+
+    req.session.success = null
+    req.session.error = null
+
     res.render('admin/dashboard', {
       title: 'Admin Dashboard',
       services,
-      error: null,
+      success,
+      error,
     })
   } catch (error) {
     console.error(error)
@@ -65,6 +73,7 @@ const getAdminDashboard = async (req, res) => {
     res.status(500).render('admin/dashboard', {
       title: 'Admin Dashboard',
       services: [],
+      success: null,
       error: 'Could not load dashboard.',
     })
   }
@@ -74,13 +83,30 @@ const createService = async (req, res) => {
   try {
     const { name, category, description, address, openingTimes } = req.body
 
+    const phone = req.body.phone ? req.body.phone.trim() : ''
+
+    const phoneRegex = /^[0-9\s()+-]*$/
+
     if (!name || !category || !description || !address || !openingTimes) {
       const services = await Service.find().sort({ name: 1 }).lean()
 
       return res.status(400).render('admin/dashboard', {
         title: 'Admin Dashboard',
         services,
+        success: null,
         error: 'Please fill in all required fields.',
+      })
+    }
+
+    if (phone && !phoneRegex.test(phone)) {
+      const services = await Service.find().sort({ name: 1 }).lean()
+
+      return res.status(400).render('admin/dashboard', {
+        title: 'Admin Dashboard',
+        services,
+        success: null,
+        error:
+          'Phone number can only contain numbers, spaces, brackets, + or -.',
       })
     }
 
@@ -89,7 +115,7 @@ const createService = async (req, res) => {
       category,
       description,
       address,
-      phone: req.body.phone,
+      phone,
       openingTimes,
 
       isFree: req.body.isFree === 'on',
@@ -101,6 +127,8 @@ const createService = async (req, res) => {
       accessibilityNotes: req.body.accessibilityNotes,
     })
 
+    req.session.success = `"${name}" has been added successfully.`
+
     res.redirect('/admin')
   } catch (error) {
     console.error(error)
@@ -110,6 +138,7 @@ const createService = async (req, res) => {
     res.status(500).render('admin/dashboard', {
       title: 'Admin Dashboard',
       services,
+      success: null,
       error: 'Could not create service.',
     })
   }
@@ -119,13 +148,21 @@ const deleteService = async (req, res) => {
   try {
     const { id } = req.params
 
-    await Service.findByIdAndDelete(id)
+    const deletedService = await Service.findByIdAndDelete(id)
+
+    if (!deletedService) {
+      req.session.error = 'Service could not be found.'
+      return res.redirect('/admin')
+    }
+
+    req.session.success = `"${deletedService.name}" has been deleted successfully.`
 
     res.redirect('/admin')
   } catch (error) {
     console.error(error)
 
-    res.status(500).send('Could not delete service')
+    req.session.error = 'Could not delete service.'
+    res.redirect('/admin')
   }
 }
 
