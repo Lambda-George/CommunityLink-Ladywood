@@ -6,7 +6,6 @@
     <%- include('partials/nav') %>
 
     <main>
-
       <div class="home-search">
         <form action="/services" method="GET" class="home-search-form">
           <input
@@ -19,13 +18,12 @@
       </div>
 
       <div class="home-container">
-
         <a href="/services?category=Energy" class="home-box box-energy">
           <span class="home-box-icon">⚡</span>
           <h3>Energy and Sustainability</h3>
         </a>
 
-        <a href="/services?category=Digital Help" class="home-box box-digital">
+        <a href="/digital" class="home-box box-digital">
           <span class="home-box-icon">💻</span>
           <h3>Digital Resources</h3>
         </a>
@@ -54,9 +52,7 @@
           <span class="home-box-icon">📍</span>
           <h3>Find Local Services</h3>
         </a>
-
       </div>
-
     </main>
 
     <%- include('partials/footer') %>
