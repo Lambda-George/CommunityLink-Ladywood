@@ -21,9 +21,14 @@
 
       <div class="admin-body">
 
-        <% if (error) { %>
-          <p class="error"><%= error %></p>
+        <% if (success) { %>
+          <p class="success-message"><%= success %></p>
         <% } %>
+
+        <% if (error) { %>
+          <p class="error-message"><%= error %></p>
+        <% } %>
+
 
         <section class="admin-card">
           <h2>Add a service</h2>
