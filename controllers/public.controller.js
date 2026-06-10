@@ -87,6 +87,24 @@ const getCommunitiesPage = (req, res) => {
   res.render('communities')
 }
 
+<<<<<<< Updated upstream
+=======
+const getWasteManagementPage = (req, res) => {
+  try {
+    res.status(200).render('waste-management', { title: 'Waste Management' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
+const getEnergyPage = (req, res) => {
+  try {
+    res.status(200).render('energy', { title: 'Energy and Sustainability' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+>>>>>>> Stashed changes
 
 module.exports = {
   getHomePage,
@@ -94,4 +112,6 @@ module.exports = {
   getMapPage,
   getFoodSupportPage,
   getCommunitiesPage,
+  getWasteManagementPage,
+  getEnergyPage
 }
