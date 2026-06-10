@@ -89,9 +89,20 @@ const getDigitalPage = async (req, res) => {
   }
 }
 
+const getFoodSupportPage = (req, res) => {
+  res.render('food-support')
+}
+
+const getCommunitiesPage = (req, res) => {
+  res.render('communities')
+}
+
+
 module.exports = {
   getHomePage,
   getServices,
   getMapPage,
   getDigitalPage,
+  getFoodSupportPage,
+  getCommunitiesPage,
 }
