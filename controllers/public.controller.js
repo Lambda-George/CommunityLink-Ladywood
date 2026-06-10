@@ -105,6 +105,15 @@ const getCommunitiesPage = (req, res) => {
   }
 }
 
+const getWasteManagementPage = (req, res) => {
+  res.render('waste-management')
+}
+
+const getEnergyPage = (req, res) => {
+  res.render('energy')
+}
+
+
 module.exports = {
   getHomePage,
   getServices,
@@ -112,4 +121,6 @@ module.exports = {
   getDigitalPage,
   getFoodSupportPage,
   getCommunitiesPage,
+  getWasteManagementPage,
+  getEnergyPage,
 }

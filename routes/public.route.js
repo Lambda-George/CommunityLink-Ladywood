@@ -5,8 +5,10 @@ const {
   getServices,
   getMapPage,
   getDigitalPage,
-  getFoodSupportPage,
-  getCommunitiesPage,
+   getFoodSupportPage,
+   getCommunitiesPage,
+   getWasteManagementPage,
+   getEnergyPage,
 } = require('../controllers/public.controller.js')
 
 const router = express.Router()
@@ -22,5 +24,9 @@ router.get('/digital', getDigitalPage)
 router.get('/food-support', getFoodSupportPage)
 
 router.get('/communities', getCommunitiesPage)
+
+router.get('/waste-management', getWasteManagementPage)
+
+router.get('/energy', getEnergyPage)
 
 module.exports = router
