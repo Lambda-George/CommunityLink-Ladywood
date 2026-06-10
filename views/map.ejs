@@ -106,12 +106,17 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <script>
-      const services = <%- JSON.stringify(services) %>;
-      const markers = {};
+    <script id="services-data" type="application/json"><%- JSON.stringify(services) %></script>
 
+    <script>
+      // Services data passed in from the server
+      const services = JSON.parse(document.getElementById('services-data').textContent);
+      const markers = {}; // stores Leaflet markers keyed by service ID
+
+      // Set up the map centred on Ladywood
       const map = L.map('ladywood-map').setView([52.4777, -1.9251], 14);
 
+      // Street and satellite tile layers
       const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors'
@@ -122,14 +127,15 @@
         attribution: '&copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
       });
 
+      // Start on street view, with a toggle control to switch between layers
       streetLayer.addTo(map);
-
       L.control.layers(
         { 'Street': streetLayer, 'Satellite': satelliteLayer },
         {},
         { position: 'topright' }
       ).addTo(map);
 
+      // Show a blue dot for the user's current location if allowed
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
           L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
@@ -138,12 +144,15 @@
         });
       }
 
+      // Small helper to pause between geocoding requests (Nominatim rate limit)
       function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+      // Cache geocoded coordinates in localStorage so pins load instantly on repeat visits
       const GEO_CACHE_KEY = 'cl_geo_cache';
       function loadCache() { try { return JSON.parse(localStorage.getItem(GEO_CACHE_KEY) || '{}'); } catch { return {}; } }
       function saveCache(cache) { try { localStorage.setItem(GEO_CACHE_KEY, JSON.stringify(cache)); } catch {} }
 
+      // Place a marker on the map and bind a popup with service details
       function addMarker(service, coords) {
         const marker = L.marker(coords).addTo(map);
         marker.bindPopup(`
@@ -161,6 +170,8 @@
         markers[service._id] = marker;
       }
 
+      // Geocode all service addresses using Nominatim (free OpenStreetMap geocoder).
+      // Cached addresses load instantly. New ones are fetched one at a time to stay within the 1 req/sec limit.
       async function geocodeAllServices() {
         const cache = loadCache();
         const toFetch = [];
@@ -168,6 +179,7 @@
         for (const service of services) {
           if (!service.address) continue;
           if (cache[service.address]) {
+            // Already geocoded, use cached coords
             addMarker(service, cache[service.address]);
           } else {
             toFetch.push(service);
@@ -176,6 +188,7 @@
 
         for (const service of toFetch) {
           try {
+            // Append Birmingham if not already in the address to improve accuracy
             const query = service.address.toLowerCase().includes('birmingham') ? service.address : service.address + ', Birmingham, UK';
             const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=gb`;
             const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
@@ -187,12 +200,13 @@
               addMarker(service, coords);
             }
           } catch (e) {}
-          await sleep(1000);
+          await sleep(1000); // wait 1s between requests
         }
       }
 
       geocodeAllServices();
 
+      // When a card is clicked, pan the map to that marker and highlight the card
       function focusService(id) {
         const marker = markers[id];
         if (marker) {
@@ -207,34 +221,47 @@
         }
       }
 
+      // Keywords used to match text search queries against amenity tags
       const tagKeywords = { free: ['free'], wifi: ['wifi', 'wi-fi'], toilets: ['toilet'], stepfree: ['step-free', 'step free', 'disabled', 'accessible'], printer: ['printer'] };
 
+      // Toggle the filter dropdown open/closed
       function toggleFilterPanel(e) {
         e.stopPropagation();
         document.getElementById('map-filter-panel').classList.toggle('open');
       }
 
+      // Close the filter panel if the user clicks anywhere outside it
       document.addEventListener('click', function(e) {
         const panel = document.getElementById('map-filter-panel');
         const btn = document.getElementById('map-filter-btn');
         if (!panel.contains(e.target) && !btn.contains(e.target)) panel.classList.remove('open');
       });
 
+      // Uncheck all filters and refresh the list
       function clearFilters() {
         document.querySelectorAll('#map-filter-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
         filterCards();
       }
 
+      // Filter cards by search text, selected categories, and amenity checkboxes.
+      // A card only shows if it matches all three.
       function filterCards() {
         const q = document.getElementById('map-search').value.toLowerCase();
+
+        // Category checkboxes have no id, so that's how we tell them apart from amenity ones
         const catBoxes = [...document.querySelectorAll('#map-filter-panel input[type="checkbox"]:not([id])')].filter(cb => cb.checked).map(cb => cb.value);
+
+        // Checked amenity boxes
         const amenities = { free: document.getElementById('f-free').checked, wifi: document.getElementById('f-wifi').checked, toilets: document.getElementById('f-toilets').checked, stepfree: document.getElementById('f-stepfree').checked, printer: document.getElementById('f-printer').checked };
+
+        // Update the active-filter count badge on the button
         const activeCount = catBoxes.length + Object.values(amenities).filter(Boolean).length;
         const countEl = document.getElementById('map-filter-count');
         countEl.style.display = activeCount ? 'inline-flex' : 'none';
         countEl.textContent = activeCount;
 
         document.querySelectorAll('.map-card').forEach(card => {
+          // Build a string of tag keywords so the text search can match amenities too
           const tagText = Object.entries(tagKeywords).filter(([k]) => card.dataset[k] === '1').flatMap(([,v]) => v).join(' ');
           const textMatch = !q || card.dataset.name.includes(q) || card.dataset.address.includes(q) || card.dataset.category.includes(q) || tagText.includes(q);
           const catMatch = catBoxes.length === 0 || catBoxes.some(c => card.dataset.category.includes(c));
