@@ -82,10 +82,24 @@
       const markers = {};
 
       const map = L.map('ladywood-map').setView([52.4777, -1.9251], 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+      const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(map);
+        attribution: '&copy; OpenStreetMap contributors'
+      });
+
+      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: '&copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+      });
+
+      streetLayer.addTo(map);
+
+      L.control.layers(
+        { 'Street': streetLayer, 'Satellite': satelliteLayer },
+        {},
+        { position: 'topright' }
+      ).addTo(map);
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
@@ -98,7 +112,8 @@
       function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
       async function geocodeAddress(address) {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`;
+        const query = address.toLowerCase().includes('birmingham') ? address : address + ', Birmingham, UK';
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=gb`;
         const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
         const data = await res.json();
         if (data.length) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
