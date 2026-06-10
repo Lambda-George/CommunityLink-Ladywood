@@ -71,38 +71,20 @@ const getServices = async (req, res) => {
 
 const getMapPage = async (req, res) => {
   try {
-    const services = await Service.find({}).lean()
     res.render('map', {
       title: 'Map',
-      services,
     })
   } catch (error) {
     res.status(500).send('Something went wrong')
   }
 }
 
-const getDigitalPage = async (req, res) => {
-  try {
-    res.status(200).render('digital', { title: 'Digital' })
-  } catch (error) {
-    res.status(500).send('Something went wrong')
-  }
-}
-
 const getFoodSupportPage = (req, res) => {
-  try {
-    res.status(200).render('food-support', { title: 'Food Support' })
-  } catch (error) {
-    res.status(500).send('Something went wrong')
-  }
+  res.render('food-support')
 }
 
 const getCommunitiesPage = (req, res) => {
-  try {
-    res.status(200).render('communities', { title: 'Communities' })
-  } catch (error) {
-    res.status(500).send('Something went wrong')
-  }
+  res.render('communities')
 }
 
 const getWasteManagementPage = (req, res) => {
@@ -125,7 +107,6 @@ module.exports = {
   getHomePage,
   getServices,
   getMapPage,
-  getDigitalPage,
   getFoodSupportPage,
   getCommunitiesPage,
   getWasteManagementPage,
