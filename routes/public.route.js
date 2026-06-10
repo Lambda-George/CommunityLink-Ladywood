@@ -4,16 +4,11 @@ const {
   getHomePage,
   getServices,
   getMapPage,
-<<<<<<< Updated upstream
-   getFoodSupportPage,
-   getCommunitiesPage,
-=======
   getDigitalPage,
   getFoodSupportPage,
   getCommunitiesPage,
   getWasteManagementPage,
   getEnergyPage
->>>>>>> Stashed changes
 } = require('../controllers/public.controller.js')
 
 const router = express.Router()

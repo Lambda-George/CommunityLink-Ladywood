@@ -87,8 +87,6 @@ const getCommunitiesPage = (req, res) => {
   res.render('communities')
 }
 
-<<<<<<< Updated upstream
-=======
 const getWasteManagementPage = (req, res) => {
   try {
     res.status(200).render('waste-management', { title: 'Waste Management' })
@@ -104,7 +102,6 @@ const getEnergyPage = (req, res) => {
     res.status(500).send('Something went wrong')
   }
 }
->>>>>>> Stashed changes
 
 module.exports = {
   getHomePage,
