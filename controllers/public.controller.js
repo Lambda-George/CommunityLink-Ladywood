@@ -89,9 +89,47 @@ const getDigitalPage = async (req, res) => {
   }
 }
 
+const getFoodSupportPage = (req, res) => {
+  try {
+    res.status(200).render('food-support', { title: 'Food Support' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
+const getCommunitiesPage = (req, res) => {
+  try {
+    res.status(200).render('communities', { title: 'Communities' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
+const getWasteManagementPage = (req, res) => {
+  try {
+    res.status(200).render('waste-management', { title: 'Waste Management' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
+const getEnergyPage = (req, res) => {
+  try {
+    res.status(200).render('energy', { title: 'Energy and Sustainability' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
+}
+
+
+
 module.exports = {
   getHomePage,
   getServices,
   getMapPage,
   getDigitalPage,
+  getFoodSupportPage,
+  getCommunitiesPage,
+  getWasteManagementPage,
+  getEnergyPage,
 }
