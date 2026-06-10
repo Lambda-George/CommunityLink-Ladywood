@@ -124,7 +124,7 @@ html, body {
   background: linear-gradient(145deg, #1e4080 0%, #0f2650 100%);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 22px 24px;
   color: white;
   font-family: 'Inter', system-ui, sans-serif;
@@ -139,9 +139,14 @@ html, body {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0);
+  background: rgba(0,0,0,0.35);
   transition: background 0.2s;
   border-radius: 16px;
+}
+
+.home-box h3, .home-box .home-box-icon {
+  position: relative;
+  z-index: 1;
 }
 
 .home-box:hover {
@@ -150,7 +155,7 @@ html, body {
 }
 
 .home-box:hover::after {
-  background: rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.2);
 }
 
 .home-box-icon {
@@ -164,13 +169,13 @@ html, body {
   line-height: 1.25;
 }
 
-.box-energy      { grid-area: energy; }
-.box-digital     { grid-area: digital; }
-.box-initiatives { grid-area: initiatives; }
-.box-food        { grid-area: food; }
-.box-council     { grid-area: council; }
-.box-waste       { grid-area: waste; }
-.box-findlocal   { grid-area: findlocal; }
+.box-energy      { grid-area: energy;      background-image: url('/images/image-1781096845072.jpg');      background-size: cover; background-position: center; }
+.box-digital     { grid-area: digital;     background-image: url('/images/image-1781096810608.jpg');     background-size: cover; background-position: center; }
+.box-initiatives { grid-area: initiatives; background-image: url('/images/initiatives and community projects.jpg'); background-size: cover; background-position: center; }
+.box-food        { grid-area: food;        background-image: url('/images/image-1781096771668.jpg');        background-size: cover; background-position: center; }
+.box-council     { grid-area: council;     background-image: url('/images/BCC-image.jpg');     background-size: cover; background-position: center; }
+.box-waste       { grid-area: waste;       background-image: url('/images/waste-management_800x800.jpg');       background-size: cover; background-position: center; }
+.box-findlocal   { grid-area: findlocal;   background-image: url('/images/flat-composition-with-wireless-location-signs-map-smartphone_1284-64597.jpg');   background-size: cover; background-position: center; }
 
 /* Larger font for tall/wide boxes, smaller for compact ones */
 .box-energy h3, .box-initiatives h3, .box-findlocal h3 {
