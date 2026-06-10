@@ -90,13 +90,20 @@ const getDigitalPage = async (req, res) => {
 }
 
 const getFoodSupportPage = (req, res) => {
-  res.render('food-support')
+  try {
+    res.status(200).render('food-support', { title: 'Food Support' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
 }
 
 const getCommunitiesPage = (req, res) => {
-  res.render('communities')
+  try {
+    res.status(200).render('communities', { title: 'Communities' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
 }
-
 
 module.exports = {
   getHomePage,
