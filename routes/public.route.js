@@ -19,6 +19,8 @@ router.get('/services', getServices)
 
 router.get('/map', getMapPage)
 
+router.get('/digital', getDigitalPage)
+
 router.get('/food-support', getFoodSupportPage)
 
 router.get('/communities', getCommunitiesPage)

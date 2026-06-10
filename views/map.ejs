@@ -5,12 +5,72 @@
   <body>
     <%- include('partials/nav') %>
 
-    <main>
-      <h1>Map of Ladywood</h1>
+    <main class="map-main">
 
-      <p>Use the map to explore the Ladywood area of Birmingham.</p>
+      <div class="map-search-bar">
+        <input type="text" id="map-search" placeholder="Search services by name, category or address..." oninput="filterCards()" />
+      </div>
 
-      <div id="ladywood-map"></div>
+      <div class="map-layout">
+
+        <!-- Left: service list -->
+        <div class="map-list" id="map-list">
+          <% if (services.length === 0) { %>
+            <p class="map-empty">No services have been added yet. Visit <a href="/admin">Admin</a> to add some.</p>
+          <% } else { %>
+            <% services.forEach(function(service) { %>
+              <div class="map-card" id="card-<%= service._id %>"
+                   data-name="<%= service.name.toLowerCase() %>"
+                   data-category="<%= service.category.toLowerCase() %>"
+                   data-address="<%= (service.address || '').toLowerCase() %>"
+                   onclick="focusService('<%= service._id %>')">
+
+                <div class="map-card-body">
+                  <div class="map-card-header">
+                    <strong class="map-card-name"><%= service.name %></strong>
+                    <span class="map-card-tag"><%= service.category %></span>
+                  </div>
+
+                  <% if (service.description) { %>
+                    <p class="map-card-desc"><%= service.description.length > 100 ? service.description.substring(0, 100) + '…' : service.description %></p>
+                  <% } %>
+
+                  <% if (service.address) { %>
+                    <span class="map-card-address">📍 <%= service.address %></span>
+                  <% } %>
+
+                  <% if (service.openingTimes) { %>
+                    <span class="map-card-hours">🕐 <%= service.openingTimes %></span>
+                  <% } %>
+
+                  <div class="map-card-badges">
+                    <% if (service.isFree) { %><span class="badge badge-green">Free</span><% } %>
+                    <% if (service.hasWifi) { %><span class="badge">WiFi</span><% } %>
+                    <% if (service.hasStepFreeAccess) { %><span class="badge">Step-free</span><% } %>
+                    <% if (service.hasToilets) { %><span class="badge">Toilets</span><% } %>
+                    <% if (service.hasPrinter) { %><span class="badge">Printer</span><% } %>
+                  </div>
+
+                  <% if (service.address) { %>
+                    <a class="map-directions-btn"
+                       href="https://www.google.com/maps/dir/?api=1&destination=<%= encodeURIComponent(service.address + ', Birmingham, UK') %>&travelmode=walking"
+                       target="_blank" rel="noopener"
+                       onclick="event.stopPropagation()">
+                      Get Directions in Google Maps ↗
+                    </a>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+
+        <!-- Right: map -->
+        <div class="map-right">
+          <div id="ladywood-map"></div>
+        </div>
+
+      </div>
     </main>
 
     <%- include('partials/footer') %>
@@ -18,20 +78,99 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const ladywoodCoordinates = [52.4777, -1.9251]
+      const services = <%- JSON.stringify(services) %>;
+      const markers = {};
 
-        const map = L.map('ladywood-map').setView(ladywoodCoordinates, 14)
+      const map = L.map('ladywood-map').setView([52.4777, -1.9251], 14);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; OpenStreetMap contributors',
-        }).addTo(map)
+      const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      });
 
-        L.marker(ladywoodCoordinates)
-          .addTo(map)
-          .bindPopup('Ladywood, Birmingham')
-      })
+      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: '&copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+      });
+
+      streetLayer.addTo(map);
+
+      L.control.layers(
+        { 'Street': streetLayer, 'Satellite': satelliteLayer },
+        {},
+        { position: 'topright' }
+      ).addTo(map);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
+            radius: 9, color: '#1f2933', fillColor: '#2563eb', fillOpacity: 1, weight: 2
+          }).addTo(map).bindPopup('<strong>Your location</strong>');
+        });
+      }
+
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+      async function geocodeAddress(address) {
+        const query = address.toLowerCase().includes('birmingham') ? address : address + ', Birmingham, UK';
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=gb`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+        const data = await res.json();
+        if (data.length) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+        return null;
+      }
+
+      async function geocodeAllServices() {
+        for (const service of services) {
+          if (!service.address) continue;
+          try {
+            const coords = await geocodeAddress(service.address);
+            if (coords) {
+              const marker = L.marker(coords).addTo(map);
+              marker.bindPopup(`
+                <div style="min-width:180px">
+                  <strong style="font-size:0.95rem">${service.name}</strong><br>
+                  <span style="color:#666;font-size:0.8rem">${service.category}</span><br>
+                  <span style="font-size:0.8rem">${service.address}</span><br><br>
+                  <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(service.address + ', Birmingham, UK')}&travelmode=walking"
+                     target="_blank" rel="noopener"
+                     style="display:block;background:#1f2933;color:white;padding:6px 10px;border-radius:6px;text-align:center;text-decoration:none;font-size:0.85rem;">
+                    Get Directions ↗
+                  </a>
+                </div>
+              `);
+              markers[service._id] = marker;
+            }
+          } catch (e) {}
+          await sleep(1100);
+        }
+      }
+
+      geocodeAllServices();
+
+      function focusService(id) {
+        const marker = markers[id];
+        if (marker) {
+          map.setView(marker.getLatLng(), 16);
+          marker.openPopup();
+        }
+        document.querySelectorAll('.map-card').forEach(c => c.classList.remove('map-card-active'));
+        const card = document.getElementById('card-' + id);
+        if (card) {
+          card.classList.add('map-card-active');
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      function filterCards() {
+        const q = document.getElementById('map-search').value.toLowerCase();
+        document.querySelectorAll('.map-card').forEach(card => {
+          const match = card.dataset.name.includes(q) ||
+                        card.dataset.category.includes(q) ||
+                        card.dataset.address.includes(q);
+          card.style.display = match ? '' : 'none';
+        });
+      }
     </script>
   </body>
 </html>
