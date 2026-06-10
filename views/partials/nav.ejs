@@ -2,14 +2,26 @@
   <a href="/" class="logo">CommunityLink Ladywood</a>
 
   <nav>
-    <a href="/">Home</a>
-    <a href="/services">Find Help</a>
-    <a href="/map">Map</a>
+    <a href="/" class="nav-link">Home</a>
+    <a href="/services" class="nav-link">Find Help</a>
+    <a href="/map" class="nav-link">Map</a>
 
     <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
-      <a href="/admin">Admin Dashboard</a>
+      <a href="/admin" class="nav-link">Admin Dashboard</a>
     <% } else { %>
-      <a href="/admin/login">Admin</a>
+      <a href="/admin/login" class="nav-link">Admin</a>
     <% } %>
   </nav>
 </header>
+
+<script>
+  (function() {
+    const path = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === '/' ? path === '/' : path.startsWith(href)) {
+        link.classList.add('nav-active');
+      }
+    });
+  })();
+</script>
