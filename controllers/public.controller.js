@@ -106,12 +106,21 @@ const getCommunitiesPage = (req, res) => {
 }
 
 const getWasteManagementPage = (req, res) => {
-  res.render('waste-management')
+  try {
+    res.status(200).render('waste-management', { title: 'Waste Management' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
 }
 
 const getEnergyPage = (req, res) => {
-  res.render('energy')
+  try {
+    res.status(200).render('energy', { title: 'Energy and Sustainability' })
+  } catch (error) {
+    res.status(500).send('Something went wrong')
+  }
 }
+
 
 
 module.exports = {
