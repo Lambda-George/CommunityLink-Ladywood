@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 //   res.status(200).render('test.ejs')
 // })
 
-//
+// routes
 app.use('/', publicRoutes)
 app.use('/admin', adminRoutes)
 

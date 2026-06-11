@@ -1,5 +1,6 @@
 const { Service } = require('../models/service.model.js')
 
+// gets the homepage
 const getHomePage = async (req, res) => {
   try {
     res.render('index', {
@@ -10,6 +11,7 @@ const getHomePage = async (req, res) => {
   }
 }
 
+// renders and gets/applies options to services
 const getServices = async (req, res) => {
   try {
     const { search, category, free, wifi, printer, toilets, stepFree } =
@@ -25,6 +27,7 @@ const getServices = async (req, res) => {
       ]
     }
 
+    // filter
     if (category) {
       filter.category = category
     }
@@ -49,6 +52,7 @@ const getServices = async (req, res) => {
       filter.hasStepFreeAccess = true
     }
 
+    // sorts services alphabetically
     const services = await Service.find(filter).sort({ name: 1 }).lean()
 
     res.render('services', {
@@ -120,8 +124,6 @@ const getEnergyPage = (req, res) => {
     res.status(500).send('Something went wrong')
   }
 }
-
-
 
 module.exports = {
   getHomePage,

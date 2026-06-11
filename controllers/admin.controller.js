@@ -1,5 +1,6 @@
 const { Service } = require('../models/service.model.js')
 
+// render login page
 const getAdminLogin = async (req, res) => {
   try {
     res.render('admin/login', {
@@ -11,10 +12,12 @@ const getAdminLogin = async (req, res) => {
   }
 }
 
+// checks the admin password and starts an admin session
 const loginAdmin = async (req, res) => {
   try {
     const { password } = req.body
 
+    // prevent empty password
     if (!password) {
       return res.status(400).render('admin/login', {
         title: 'Admin Login',
@@ -22,6 +25,7 @@ const loginAdmin = async (req, res) => {
       })
     }
 
+    // compare passwords
     if (password !== process.env.ADMIN_PASSWORD) {
       return res.status(400).render('admin/login', {
         title: 'Admin Login',
@@ -41,6 +45,7 @@ const loginAdmin = async (req, res) => {
   }
 }
 
+// destroy current session and logout
 const logoutAdmin = async (req, res) => {
   req.session.destroy((error) => {
     if (error) {
@@ -51,6 +56,7 @@ const logoutAdmin = async (req, res) => {
   })
 }
 
+// loads admin dashboard and displays all services
 const getAdminDashboard = async (req, res) => {
   try {
     const services = await Service.find().sort({ name: 1 }).lean()
@@ -79,14 +85,16 @@ const getAdminDashboard = async (req, res) => {
   }
 }
 
+// creates a new service
 const createService = async (req, res) => {
   try {
     const { name, category, description, address, openingTimes } = req.body
 
+    // phone number is optional, but will be formatted anyway
     const phone = req.body.phone ? req.body.phone.trim() : ''
-
     const phoneRegex = /^[0-9\s()+-]*$/
 
+    // checks
     if (!name || !category || !description || !address || !openingTimes) {
       const services = await Service.find().sort({ name: 1 }).lean()
 
@@ -98,6 +106,7 @@ const createService = async (req, res) => {
       })
     }
 
+    // extra check for phone
     if (phone && !phoneRegex.test(phone)) {
       const services = await Service.find().sort({ name: 1 }).lean()
 
@@ -110,6 +119,7 @@ const createService = async (req, res) => {
       })
     }
 
+    // connect and save new service to database
     await Service.create({
       name,
       category,
@@ -127,6 +137,7 @@ const createService = async (req, res) => {
       accessibilityNotes: req.body.accessibilityNotes,
     })
 
+    // feedback
     req.session.success = `"${name}" has been added successfully.`
 
     res.redirect('/admin')
@@ -144,12 +155,14 @@ const createService = async (req, res) => {
   }
 }
 
+// deletes services
 const deleteService = async (req, res) => {
   try {
     const { id } = req.params
 
     const deletedService = await Service.findByIdAndDelete(id)
 
+    // error for if it doesn't exist
     if (!deletedService) {
       req.session.error = 'Service could not be found.'
       return res.redirect('/admin')
